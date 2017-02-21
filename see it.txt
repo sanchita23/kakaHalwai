@@ -1,0 +1,78 @@
+<%@page import="java.util.Date"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+ <%@page  import="java.util.List" %> 
+  <%@page  import="com.cg.chatroom.*" %> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>My Chat room</title>
+</head>
+<body>
+<% int count=0; %>
+<% Object obj = application.getAttribute("chatmsg");
+List<Message> messages = null;
+if(obj != null) {
+	messages =(List)obj;
+	count= messages.size();
+	
+}
+
+%>
+<h3>There are<%=count %>Messages in chat</h3>
+
+<!-- Display All mesages[if Exits!] -->
+<%
+
+if(count>0){
+	  for(Message msg : messages){
+
+%>
+  <%=msg.getUserName()%> Wrote: <span style="color:blue">
+                                      <%=msg.getMessage() %>
+                                </span>
+   from <%=msg.getUserAddress() %>on<%=msg.getDate() %><br/>
+<%
+	}
+}
+
+%>
+<!-- -Allow User to add new one! -->
+<form>
+Your name: <input type="text" name="uname"/><br/>
+
+Your Message:<textarea name="msg" rows="4" cols="50"></textarea><br/>
+<input type="submit" value="send"/>
+
+</form>
+<!-- - Form Submission Code -->
+
+<% String uname=request.getParameter("uname");
+
+String msg= request.getParameter("msg");
+//If Every Field Has some Value...
+if(uname != null && msg !=null){
+	
+	String addr = request.getRemoteAddr();
+	Date date = new Date();
+	Message message = new Message();
+	message.setDate(date);
+	message.setUserName(uname);
+	message.setUserAddress(addr);
+	message.setMessage(msg);
+	
+	messages.add(message);  //add newly created message to list
+	
+}
+
+
+%>
+
+</form>
+
+
+
+
+</body>
+</html>
